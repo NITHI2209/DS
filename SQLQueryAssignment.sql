@@ -62,6 +62,12 @@ Alter table salesman alter column SalesmanId int not null
 Alter table salesman add constraint pri_id primary key(SalesmanID)
 sp_help "Salesman"
 
+----- 2) Add Foreign key constraint for SalesmanId column in Customer table
+Alter table customer add constraint fro_key foreign key (salesmanId) references salesman(salesmanId)
+----That parent salaesman table contains ID is, 101,102,103,104,105,106 but customer table contains 101,103,104,107,110 
+--so,107 and 110 is not present in salesman table.so, i can't add the foreign key constraint in customer table.it's getting
+--error.
+ 
 ----- 2)Add default constraint for City column in Salesman table
 Alter table salesman add constraint df_c default 'Texas' for city
 
@@ -69,4 +75,21 @@ Alter table salesman add constraint df_c default 'Texas' for city
 Alter table customer alter column CustomerName varchar(255) not null
 
 ----- 3)Fetch the data where the Customer’s name is ending with ‘N’ also get the purchase amount value greater than 500
-Select * from customer where CustomerName like '%N' and PurchaseAmount > 500
+Select * from customer where CustomerName like '%N' and PurchaseAmount >  500 
+
+-----4)Using SET operators, retrieve the first result with unique SalesmanId values from two tables and the other result containing SalesmanId with duplicates from two tables.
+select salesmanId from salesman
+union
+select salesmanId from customer
+
+select salesmanId from salesman
+union all
+select salesmanId from customer
+
+------5)Display the below columns which has the matching data.Orderdate, Salesman Name, Customer Name, Commission, and City which has therange of Purchase Amount between 500 to 1500.
+select o.orderdate,s.salesmanname,c.customerName,s.Commission,s.city from salesman s inner join 
+customer c on s.salesmanId = c.salesmanId inner join orders O on c.customerId = o.customerId
+where c.purchaseamount between 500 and 1500
+
+------6) Right join 
+select * from salesman s  right join orders o on s.salesmanid = o.salesmanId
