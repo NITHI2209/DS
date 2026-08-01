@@ -245,3 +245,112 @@ end
 
 exec dept 'Finance'
 
+/*SQL Mock Test (15 Questions)*/
+/*Section A – Basic (2 Marks Each)
+Q1
+
+Display the Name, Department, and Salary of employees earning more than ₹60,000, ordered by salary in descending order.
+
+Q2
+
+Display the number of employees and the average salary in each department.
+
+Q3
+
+Display only those departments where the average salary is greater than ₹65,000.*/
+
+select name , department , salary from employee where salary > 60000 order by salary desc
+
+select department, count(*) as count_dept , avg(salary) as AVG_SAL from employee group by department   
+
+select department , avg(salary) as avg_sa from employee group by department having avg(Salary) > 65000
+
+
+/*Display all employees whose salary is between ₹50,000 and ₹80,000, age is greater than 28, and sort them by salary (highest first).*/
+select * from employee where salary between 50000 and 80000 and age > 28 order by salary desc
+/*Display employees whose:
+
+Department is IT or Finance
+City is not Chennai*/
+select * from employee where department in ('HR','Finance') and city <> 'chennai'
+
+select department , count(*) as total_employee from employee group by department
+select department , max(salary) as max_salary from employee group by department 
+select department , min(salary) as min_salary from employee group by department 
+select department , avg(salary) as avg_salary from employee group by department 
+
+
+select department ,avg(salary) as avg_sal,
+count(*) as total_emp from employee group by department having count(*) >= 2 and 
+avg(salary) > 60000
+select concat(name , ' from ', city , ' works in ' , department , ' and earns Rs . ' ,salary) from employee
+
+select * from employee where salary > ( select  avg(salary) from employee)
+select * from employee where salary < (select avg(salary) from employee)
+
+select max(salary) as third_highest  from employee where salary < 
+(select max(salary) from employee where salary < (select max(salary) from employee))
+
+with CTE as 
+(
+select name , salary, DENSE_RANK() over (order by salary desc)  
+as rnk from employee)
+select * from CTE  where rnk = 3
+
+
+with CTE as
+(select name , department, salary , ROW_NUMBER() over (partition by department order by salary desc) as rn 
+from employee)
+select * from CTE where rn = 2
+
+with CTE as
+(select name , department, salary , DENSE_RANK() over (partition by department order by salary desc) as rn 
+from employee)
+select * from CTE where rn = 2
+
+/*Write a query to display employees whose salary is greater than
+the average salary of their own department.*/
+
+SELECT *
+FROM Employee e
+WHERE Salary >
+(
+    SELECT AVG(Salary)
+    FROM Employee
+    WHERE Department = e.Department
+);
+
+/*Display the third highest-paid employee in the company.*/
+select * from employee where salary = (select max(salary) as third_highest from employee where salary < 
+(select max(salary) from employee where salary < (select max(salary) from employee)))
+
+with cte as(
+select * , dense_rank() over (order by salary desc) as rnk from employee)
+select * from Cte where rnk = 3
+
+/*Display the highest-paid employee in each department.*/
+
+with cte as (
+select * ,
+DENSE_RANK() over (partition by department order by salary desc)
+as rnk from employee)
+select * from cte
+where rnk = 1
+
+/*Find the department that has the highest average salary.*/
+select top(1) department , avg(salary) as avg_salary from employee
+group by department
+order by avg(salary) desc
+
+/*Display all employees who work in a department having more than 2 employees.*/
+with cte as (
+select department , count(*) as total_count from employee group by department) 
+select * from cte 
+where total_count > 2
+
+select department , count(*) as total_count from employee 
+group by department
+having count(*) > 2
+
+/*Display employees whose city has more than one employee.*/
+select  name , department , city from employee

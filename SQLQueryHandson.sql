@@ -109,3 +109,213 @@ WHEN  PerformanceRating = 3 THEN 'AVERAGE'
 ELSE 'NEEDS IMPROVEMENT'
 END AS PERFORMANCE
 FROM EMPLOYEES
+
+---Handson
+use handson
+
+---create a user defined function which return a given number multiplied by 10
+create function multiply(
+@a int
+)
+returns int 
+as begin 
+return @a * 10 
+end 
+
+select dbo.multiply (2) 
+
+---use case statement to check if 100 is less than 200 , greater than 200 or equal to 200 and print the value
+select case
+when 100 < 200 then 'Lesser'
+when 100 > 200 then 'Greater'
+Else 'Equal'
+end as check_num
+
+CREATE TABLE orders (
+order_id INT PRIMARY KEY,
+customer_name VARCHAR(50),
+product_name VARCHAR(50),
+amount DECIMAL(10,2),
+order_date DATE
+);
+
+INSERT INTO orders
+(order_id, customer_name, product_name, amount, order_date)
+VALUES
+(101, 'Rahul', 'Laptop', 85000, '2025-01-05'),
+(102, 'Priya', 'Mobile', 25000, '2025-01-08'),
+(103, 'Aman', 'Headphones', 3500, '2025-01-10'),
+(104, 'Sneha', 'Monitor', 18000, '2025-01-12'),
+(105, 'Karan', 'Keyboard', 2500, '2025-01-15'),
+(106, 'Riya', 'Tablet', 32000, '2025-01-18'),
+(107, 'Vikas', 'Printer', 12000, '2025-01-20'),
+(108, 'Neha', 'Mouse', 900, '2025-01-22');
+select * from orders
+
+---Case statement 
+select order_id, amount, case 
+when amount <5000 then 'low amount'
+when amount between 5000 and 10000 then 'mid amount'
+else 'high amount'
+end as Status
+from Orders
+
+---user defined function to fetch amount greater than the given input
+create function compare (@a int)
+returns table 
+as 
+return (
+select * from orders where amount > @a
+)
+
+select * from dbo.compare(13000)
+
+---user defined function to find min,max,avg amount from the orders table 
+
+create function amot()
+returns table 
+as 
+return (
+select max(amount) as maximum,
+min(amount) as minimum,
+avg(amount) as average
+from orders)
+
+select * from dbo.amot()
+
+---Inside a TRY ...CATCH block, divide 100 with 0 , print the default error mgs
+BEGIN TRY
+SELECT 100 / 0 AS Result;
+END TRY
+BEGIN CATCH
+SELECT ERROR_MESSAGE(), ERROR_NUMBER(),ERROR_STATE()
+END CATCH;
+
+CREATE TABLE Customer
+(
+customer_id INT PRIMARY KEY,
+first_name VARCHAR(50),
+last_name VARCHAR(50),
+email VARCHAR(100),
+city VARCHAR(50),
+state VARCHAR(50)
+)
+
+INSERT INTO Customer
+VALUES
+(101,'John','Jordan','john@gmail.com','San Jose','California'),
+(102,'Emma','Watson','emma@gmail.com','New York','New York'),
+(103,'David','Miller','david@gmail.com','San Jose','California'),
+(104,'Sophia','Brown','sophia@gmail.com','Chicago','Illinois'),
+(105,'James','Jordan','james@gmail.com','San Jose','California')
+
+select * from customer
+
+/*Assume an employee joined the company on '2022-03-15'.
+Write a query to find:
+Total number of days worked till today. 
+Total number of months worked. 
+Total number of years worked */
+
+select 
+DATEDIFF(DAY,'2022-03-15' , GETDATE()) as Total_days_worked,
+DATEDIFF(MONTH,'2022-03-15' , GETDATE()) as Total_months_worked,
+DATEDIFF(YEAR,'2022-03-15' , GETDATE()) as Total_year_worked
+
+
+----------------------------------------------
+CREATE TABLE FoodOrders
+(
+    OrderID INT PRIMARY KEY,
+    CustomerName VARCHAR(100),
+    City VARCHAR(50),
+    RestaurantName VARCHAR(100),
+    Cuisine VARCHAR(50),
+    OrderDate DATE,
+    OrderAmount DECIMAL(10,2),
+    DeliveryTime INT,               -- in minutes
+    PaymentMode VARCHAR(20),
+    OrderStatus VARCHAR(20)
+)
+
+INSERT INTO FoodOrders VALUES
+(1001,'Aarav','Delhi','Spice Villa','North Indian','2025-01-02',850,32,'UPI','Delivered'),
+(1002,'Priya','Mumbai','Pizza Corner','Italian','2025-01-03',620,28,'Card','Delivered'),
+(1003,'Rahul','Bangalore','Dragon Bowl','Chinese','2025-01-04',1450,45,'UPI','Delivered'),
+(1004,'Sneha','Chennai','Burger Hub','Fast Food','2025-01-05',480,25,'Cash','Cancelled'),
+(1005,'Aarav','Delhi','Pizza Corner','Italian','2025-01-06',760,30,'Card','Delivered'),
+(1006,'Karan','Delhi','Spice Villa','North Indian','2025-01-07',980,38,'UPI','Delivered'),
+(1007,'Priya','Mumbai','Dragon Bowl','Chinese','2025-01-08',1320,42,'UPI','Delivered'),
+(1008,'Rahul','Bangalore','Burger Hub','Fast Food','2025-01-09',540,22,'Cash','Delivered'),
+(1009,'Meera','Hyderabad','Biryani House','Hyderabadi','2025-01-10',1190,35,'Card','Delivered'),
+(1010,'Aarav','Delhi','Dragon Bowl','Chinese','2025-01-11',1590,48,'UPI','Delivered'),
+(1011,'Priya','Mumbai','Pizza Corner','Italian','2025-01-12',710,29,'UPI','Cancelled'),
+(1012,'Karan','Delhi','Burger Hub','Fast Food','2025-01-13',430,24,'Cash','Delivered'),
+(1013,'Rahul','Bangalore','Spice Villa','North Indian','2025-01-14',880,33,'Card','Delivered'),
+(1014,'Meera','Hyderabad','Dragon Bowl','Chinese','2025-01-15',1750,50,'UPI','Delivered'),
+(1015,'Sneha','Chennai','Biryani House','Hyderabadi','2025-01-16',1100,39,'Card','Delivered'),
+(1016,'Aarav','Delhi','Burger Hub','Fast Food','2025-01-17',510,21,'UPI','Delivered'),
+(1017,'Karan','Delhi','Pizza Corner','Italian','2025-01-18',670,27,'Card','Delivered'),
+(1018,'Rahul','Bangalore','Dragon Bowl','Chinese','2025-01-19',1540,46,'UPI','Delivered'),
+(1019,'Priya','Mumbai','Biryani House','Hyderabadi','2025-01-20',990,34,'Cash','Delivered'),
+(1020,'Meera','Hyderabad','Spice Villa','North Indian','2025-01-21',820,31,'Card','Delivered')
+
+select * from FoodOrders
+
+
+/*Display each customer total spending and sort them*/
+
+select customername,sum(orderamount) as total_spending from foodorders group by customername order by sum(orderamount) desc
+
+/* Find customers who have placed more than 3 delivered orders.*/
+SELECT customername,
+COUNT(*) AS total_count
+FROM FoodOrders 
+where orderstatus = 'Delivered'
+GROUP BY customername 
+having count(*) > 3
+
+/* display every order along with avg order amount */
+
+select CustomerName,orderID,orderamount ,avg(OrderAmount) over(partition by customerName) as avg_amount from Foodorders
+
+/*Rank customer based on total_spending*/
+
+select customername , sum(orderamount) as total_spending, 
+rank() over (order by sum(orderamount) desc) as rank_ from foodorders 
+where orderstatus = 'delivered'
+group by customername
+
+/* Find all the orders whose order is greater than the avg amt */
+
+select * from foodorders where orderamount>(select avg(orderamount) from foodorders)
+
+--create a view that displays the avg delivery time for each restaraunt
+
+
+
+create view avg_time
+as 
+select  RestaurantName , avg(DeliveryTime) as avg_time 
+from foodorders 
+group by RestaurantName
+
+select * from avg_time
+
+
+---CTE
+with avgCalculate as(
+select CustomerName,avg(orderamount) as avgOrderAmount
+from foodorders 
+group by CustomerName)
+select * from avgCalculate where avgOrderAmount>1000
+
+---whenever a new order is inserted , display the message :
+--New order added successfully
+
+create trigger trig_i on foodorders
+after insert  
+as begin 
+print 'New order added successfully'
+end
+
