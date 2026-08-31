@@ -101,3 +101,5 @@ select * from employee
 sp_rename 'employee.department','Domain'
 select * from employee
 sp_rename 'employee.Domain','department'
+
+select*from emp
