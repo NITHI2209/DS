@@ -224,3 +224,141 @@ select e.first_name,e.last_name, d.name,l.city
 from employee e inner join department d on e.Department_ID = d.Department_Id
 inner join location l on d.Location_Id = l.Location_Id
 
+/*4. How many employees are working in different departments? Display with
+department names.*/
+SELECT d.Name AS department_name,
+count(e.Employee_Id) as number_of_employees
+from Department d
+left join employee e
+on e.Department_ID = d.Department_Id
+GROUP BY d.Name
+
+/*5. How many employees are working in the sales department?*/
+select d.name as department_name ,count(*) as number_of_emp
+from employee e inner join department d 
+on e.Department_ID = d.Department_Id
+where d.name = 'sales'
+group by d.name
+
+/*6. Which is the department having greater than or equal to 3 employees and 
+display the department names in ascending order.*/
+select d.name as department_name ,count(*) as number_of_employee from employee e
+inner join department d on e.Department_ID = d.Department_Id
+group by d.name
+having count(*) >= 3
+order by d.name asc
+
+/*7. How many employees are working in 'Dallas'?*/
+select l.city,count(*) as number_of_employee from employee e
+inner join department d on e.Department_ID = d.Department_Id
+inner join location l on d.Location_Id = l.location_id
+where l.city = 'dallas'
+group by l.city
+
+/*8. Display all employees in sales or operation departments.*/
+select e.first_name , e.last_name , d.name as department_name from employee e
+inner join Department d on e.department_id = d.Department_Id
+where d.name = 'sales' or d.name = 'operations'
+
+/*CONDITIONAL STATEMENT*/
+/*1. Display the employee details with salary grades. Use conditional statement to
+create a grade column*/
+
+select employee_id , first_name , last_name ,salary,
+case
+when salary <= 1000 then 'Grade D'
+when salary <= 1500 then 'Grade C'
+when salary <= 2000 then 'Grade B'
+when salary <=3000 then  'Grade A'
+ELSE 'Above Grade A'
+end as grade from employee
+
+/*2. List out the number of employees grade wise. Use conditional statement to
+create a grade column.*/
+select 
+case
+when salary <= 1000 then 'Grade D'
+when salary <= 1500 then 'Grade C'
+when salary <= 2000 then 'Grade B'
+when salary <= 3000 then 'Grade A'
+End as Grade,
+count(*) as number_of_employees from employee
+group by 
+case 
+when salary <= 1000 then 'Grade D'
+when salary <= 1500 then 'Grade C'
+when salary <= 2000 then 'Grade B'
+when salary <= 3000 then 'Grade A'
+end
+
+/*3. Display the employee salary grades and the number of employees between
+2000 to 5000 range of salary.*/
+select 
+case 
+when salary <= 2000 then 'Grade B'
+when salary <= 3000 then 'Grade A'
+when salary <= 5000 then 'Above Grade A'
+end as grade,
+count(*) as number_of_employee from employee
+where salary between 2000 and 5000
+group by case 
+when salary <= 2000 then 'Grade B'
+when salary <= 3000 then 'Grade A'
+when salary <= 5000 then 'Above Grade A'
+end
+
+
+/*Subqueries:*/
+/*1. Display the employees list who got the maximum salary.*/
+select * from employee where salary = (select max(salary) from employee) 
+
+/*2. Display the employees who are working in the sales department.*/
+select * from employee where department_id = (select Department_id from 
+Department where name = 'sales')
+
+/*3. Display the employees who are working as 'Clerk'.*/
+select e.first_name ,e.last_name, j.designation from employee e
+inner join job j on e.Job_Id = j.Job_Id where j.Designation = 'clerk'
+
+/*4. Display the list of employees who are living in 'Boston'.*/
+select e.first_name , e.last_name, l.city 
+from employee e inner join department d 
+on e.Department_ID =  d.Department_Id
+inner join location l  
+on l.Location_Id = d.Location_Id
+where l.city = 'Boston'
+
+/*5. Find out the number of employees working in the sales department.*/
+select count(*) as employee_count from employee e 
+inner join department d 
+on e.Department_ID = d.Department_Id where d.name = 'sales' 
+group by d.name
+
+/*6. Update the salaries of employees who are working as clerks on the basis of
+10%.*/
+Update employee
+set salary = 1.10 * salary 
+where job_id = (
+select job_id from job where Designation = 'clerk')
+
+select * from employee
+
+/*7. Display the second highest salary drawing employee details.*/
+select * from employee where salary =(select max(salary) from employee where salary <
+(select max(salary) from employee))
+
+/*8. List out the employees who earn more than every employee in department 30.*/
+select * from employee where salary > (select max(salary) from employee where Department_ID = 30)
+
+/*9. Find out which department has no employees.*/
+select * from department where Department_Id not in (select Department_Id from employee)
+
+/*10. Find out the employees who earn greater than the average salary for
+their department.*/
+select * from employee e where salary > (select avg(salary) from employee 
+where Department_ID = e.Department_ID)
+
+
+
+
+
